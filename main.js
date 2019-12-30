@@ -146,7 +146,7 @@ const ny = new Canv('canvas', {
     },
 
     playFireworkSound() {
-        const effect = Canv.random(this.fireworks.sounds);
+        const effect = Canv.random(this.sounds.fireworks);
         effect.play();
     },
 
