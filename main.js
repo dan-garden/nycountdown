@@ -112,7 +112,7 @@ function Firework(canv, x, y, velX, velY) {
 
 const ny = new Canv('canvas', {
     fullscreen: true,
-    debug: true,
+    debug: false,
     debugSeconds: 0,
     displayType: 1,
     fireworkDelay: 20,
@@ -139,6 +139,7 @@ const ny = new Canv('canvas', {
         this.newYears = false;
         this.clicked = false;
         this.triggered = false;
+        this.triggerDebug = false;
         this.auto = false;
         this.pole = new ShapeGroup({
             ball: new Circle(-100, -100),
@@ -257,9 +258,15 @@ const ny = new Canv('canvas', {
         }
     },
 
+    setDebug() {
+        this.triggerDebug = true;
+        this.debug = true;
+    },
+
     getCountdown() {
         if (this.debug) {
-            if (this.frames === 1) {
+            if (this.frames === 1 || this.triggerDebug) {
+                this.triggerDebug = false;
                 this.nyDate = new Date();
                 this.nyDate.setSeconds(this.nyDate.getSeconds() + (this.debugSeconds+1));
             }
