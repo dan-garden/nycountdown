@@ -273,7 +273,7 @@ const ny = new Canv('canvas', {
         this.countdown.color = color;
         this.countdown.string = this.dhm(this.getCountdown());
 
-        this.clickText = new Text("(click for fireworks)", this.halfWidth(), this.height-50, 14);
+        this.clickText = new Text("(click for fireworks)", this.halfWidth(), 10, 14);
         this.clickText.textAlign = "center";
         this.clickText.color = color;
         
