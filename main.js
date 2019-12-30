@@ -2,11 +2,12 @@ function fromAngle(e,t) {
     return void 0===t&&(t=1),new Vector(t*Math.cos(e),t*Math.sin(e),0)
 }
 
-function Particle(x, y, color, firework) {
+function Particle(x, y, color, firework, size=1) {
     this.pos = new Vector(x, y);
     this.firework = firework;
     this.lifespan = 255;
     this.color = color;
+    this.size = size;
 
     if(this.firework) {
         this.vel = new Vector(Canv.random(-5, 5), Canv.random(-12, -8));
@@ -38,7 +39,7 @@ function Particle(x, y, color, firework) {
     }
 
     this.show = function(canv) {
-        const point = new Circle(this.pos.x, this.pos.y, 1);
+        const point = new Circle(this.pos.x, this.pos.y, this.size);
         if(!this.firework) {
             point.color = new Color(this.color.r, this.color.g, this.color.b, canv.map(this.lifespan, 0, 255, 0, 1));
         } else {
@@ -51,7 +52,7 @@ function Particle(x, y, color, firework) {
 
 function Firework(canv, x, y) {
     this.color = Color.random();
-    this.firework = new Particle(x, y, this.color, true);
+    this.firework = new Particle(x, y, this.color, true, 2);
     this.exploded = false;
     this.particles = [];
 
@@ -105,7 +106,7 @@ function Firework(canv, x, y) {
 const ny = new Canv('canvas', {
     fullscreen: true,
     debug: true,
-    debugSeconds: 20,
+    debugSeconds: 5,
     displayType: 1,
     fireworkDelay: 10,
     setup() {
@@ -123,6 +124,7 @@ const ny = new Canv('canvas', {
         this.fontSize = 40;
         this.tenSeconds = false;
         this.newYears = false;
+        this.clicked = false;
         this.triggered = false;
         this.pole = new ShapeGroup({
             ball: new Circle(-100, -100),
@@ -133,16 +135,19 @@ const ny = new Canv('canvas', {
         this.gravity = new Vector(0, 0.2);
         this.fireworks = [];
 
-
         this.bg = new Rect(0, 0, this.width, this.height);
         this.bg.color = new Color(0, 0, 0, 0.1);
         this.bg.addEventListener("click", () => {
             this.displayType = this.displayType ? 0 : 1;
+            this.clicked = true;
+            if(this.newYears) {
+                this.addFirework(this.mouseX, this.mouseY);
+            }
         });
     },
 
-    addFirework() {
-        this.fireworks.push(new Firework(this, this.randomWidth, this.height));
+    addFirework(x, y) {
+        this.fireworks.push(new Firework(this, x, y));
     },
 
     playFireworkSound() {
@@ -194,8 +199,6 @@ const ny = new Canv('canvas', {
     triggerNewYears() {
         if(!this.triggered) {
             this.triggered = true;
-
-            alert("Happy New Years!");
         }
     },
 
@@ -249,6 +252,11 @@ const ny = new Canv('canvas', {
         const color = this.bg.color.lightOrDark() === "dark" ? new Color(255) : new Color(0);
         this.countdown.color = color;
         this.countdown.string = this.dhm(this.getCountdown());
+
+        this.clickText = new Text("(click for fireworks)", this.halfWidth(), this.height-50);
+        this.clickText.textAlign = "center";
+        this.clickText.color = color;
+        
         if (this.tenSeconds === true && !this.newYears) {
             this.updatePole();
         }
@@ -256,7 +264,7 @@ const ny = new Canv('canvas', {
         if (this.newYears) {
             this.triggerNewYears();
             this.countdown.string = "HAPPY NEW YEARS";
-            this.countdown.moveX(Canv.random(-5, 5));
+            // this.countdown.moveX(Canv.random(-5, 5));
 
             if (this.getCountdown() < -200 && this.pole.stick.height > 1) {
                 this.pole.stick.height -= 10;
@@ -264,14 +272,16 @@ const ny = new Canv('canvas', {
             }
         }
 
-        if(this.newYears && this.frames % this.fireworkDelay === 0 && Canv.random(0, 1) === 0) {
-            this.addFirework();
-        }
-
-        for(let i = this.fireworks.length-1; i>=0; i--) {
-            this.fireworks[i].update(this.gravity);
-            if(this.fireworks[i].done()) {
-                this.fireworks.splice(i, 1);
+        if(this.clicked) {
+            // if(this.newYears && this.frames % this.fireworkDelay === 0 && Canv.random(0, 1) === 0) {
+            //     this.addFirework(this.randomWidth, this.height);
+            // }
+    
+            for(let i = this.fireworks.length-1; i>=0; i--) {
+                this.fireworks[i].update(this.gravity);
+                if(this.fireworks[i].done()) {
+                    this.fireworks.splice(i, 1);
+                }
             }
         }
     },
@@ -279,11 +289,17 @@ const ny = new Canv('canvas', {
     draw() {
         this.add(this.bg);
 
-        this.fireworks.forEach(firework => {
-            firework.show();
-        })
+        if(this.clicked) {
+            this.fireworks.forEach(firework => {
+                firework.show();
+            })
+        }
 
         this.add(this.pole);
+
+        if(this.newYears) {
+            this.add(this.clickText);
+        }
         this.add(this.countdown);
     }
 });
