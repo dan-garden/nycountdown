@@ -123,6 +123,7 @@ const ny = new Canv('canvas', {
         this.fontSize = 40;
         this.tenSeconds = false;
         this.newYears = false;
+        this.triggered = false;
         this.pole = new ShapeGroup({
             ball: new Circle(-100, -100),
             stick: new Rect(-100, -100),
@@ -190,6 +191,14 @@ const ny = new Canv('canvas', {
         }
     },
 
+    triggerNewYears() {
+        if(!this.triggered) {
+            this.triggered = true;
+
+            alert("Happy New Years!");
+        }
+    },
+
     getCountdown() {
         if (this.debug) {
             if (this.frames === 1) {
@@ -245,6 +254,7 @@ const ny = new Canv('canvas', {
         }
 
         if (this.newYears) {
+            this.triggerNewYears();
             this.countdown.string = "HAPPY NEW YEARS";
             this.countdown.moveX(Canv.random(-5, 5));
 
