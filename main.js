@@ -258,7 +258,8 @@ const ny = new Canv('canvas', {
         }
     },
 
-    setDebug() {
+    setDebug(debugSeconds=10) {
+        this.debugSeconds = debugSeconds;
         this.triggerDebug = true;
         this.debug = true;
     },
