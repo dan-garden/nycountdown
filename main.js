@@ -1,28 +1,28 @@
-function fromAngle(e,t) {
-    return void 0===t&&(t=1),new Vector(t*Math.cos(e),t*Math.sin(e),0)
+function fromAngle(e, t) {
+    return void 0 === t && (t = 1), new Vector(t * Math.cos(e), t * Math.sin(e), 0)
 }
 
-function Particle(x, y, color, firework, size=1, velX, velY) {
+function Particle(x, y, color, firework, size = 1, velX, velY) {
     this.pos = new Vector(x, y);
     this.firework = firework;
     this.lifespan = 255;
     this.color = color;
     this.size = size;
 
-    if(this.firework) {
+    if (this.firework) {
         this.vel = new Vector(velX, velY);
     } else {
-        this.vel = fromAngle(Math.random()* (Math.PI * 2));
+        this.vel = fromAngle(Math.random() * (Math.PI * 2));
         this.vel.multi(Canv.random(-10, 20));
     }
     this.acc = new Vector(0, 0);
 
-    this.applyForce = function(force) {
+    this.applyForce = function (force) {
         this.acc.add(force);
     }
 
-    this.update = function() {
-        if(!this.firework) {
+    this.update = function () {
+        if (!this.firework) {
             this.vel.multi(0.85);
             this.lifespan -= 5;
         }
@@ -32,21 +32,21 @@ function Particle(x, y, color, firework, size=1, velX, velY) {
         this.acc.multi(0);
     }
 
-    this.done = function() {
-        if(this.lifespan < 0) {
+    this.done = function () {
+        if (this.lifespan < 0) {
             return true;
         }
     }
 
-    this.show = function(canv) {
+    this.show = function (canv) {
         const point = new Circle(this.pos.x, this.pos.y, this.size);
-        if(!this.firework) {
+        if (!this.firework) {
             point.color = new Color(this.color.r, this.color.g, this.color.b, canv.map(this.lifespan, 0, 255, 0, 1));
         } else {
             point.color = new Color(this.color);
         }
         canv.add(point);
-        
+
     }
 }
 
@@ -60,51 +60,51 @@ function Firework(canv, x, y, velX, velY) {
     this.particles = [];
     this.rainbow = Canv.random(0, 1);
 
-    this.done = function() {
-        if(this.exploded && this.particles.length === 0) {
+    this.done = function () {
+        if (this.exploded && this.particles.length === 0) {
             return true;
         } else {
             return false;
         }
     }
 
-    this.update = function(gravity) {
-        if(!this.exploded) {
+    this.update = function (gravity) {
+        if (!this.exploded) {
             this.firework.applyForce(gravity);
             this.firework.update();
 
-            if(this.firework.vel.y >= 0) {
+            if (this.firework.vel.y >= 0) {
                 this.exploded = true;
                 this.explode();
             }
         }
 
-        for(let i = this.particles.length-1; i >= 0; i--) {
+        for (let i = this.particles.length - 1; i >= 0; i--) {
             this.particles[i].applyForce(gravity);
             this.particles[i].update();
-            if(this.particles[i].done()) {
+            if (this.particles[i].done()) {
                 this.particles.splice(i, 1);
             }
         }
     }
 
-    this.explode = function() {
+    this.explode = function () {
         canv.playFireworkPop();
-        for(let i = 0; i < Canv.random(50, 150); i++) {
+        for (let i = 0; i < Canv.random(50, 150); i++) {
             let p = new Particle(this.firework.pos.x, this.firework.pos.y, this.color, false, 1);
-            if(this.rainbow) {
+            if (this.rainbow) {
                 p.color = Color.random();
             }
             this.particles.push(p);
         }
     }
 
-    this.show = function() {
-        if(!this.exploded) {
+    this.show = function () {
+        if (!this.exploded) {
             this.firework.show(canv);
         }
 
-        for(let i = this.particles.length-1; i >= 0; i--) {
+        for (let i = this.particles.length - 1; i >= 0; i--) {
             this.particles[i].show(canv);
         }
     }
@@ -113,25 +113,46 @@ function Firework(canv, x, y, velX, velY) {
 const ny = new Canv('canvas', {
     fullscreen: true,
     debug: false,
-    debugSeconds: 0,
+    debugSeconds: 10,
     displayType: 1,
     fireworkDelay: 20,
     autoFireworks: true,
     fontSize: 40,
     setup() {
         this.sounds = {
-            crackling: new Howl({ src: ['sounds/firework-crackling.mp3'] }),
+            crackling: new Howl({
+                src: ['sounds/firework-crackling.mp3']
+            }),
             pop: [
-                new Howl({ src: ['sounds/firework-single-1.mp3'] }),
-                new Howl({ src: ['sounds/firework-single-2.mp3'] }),
-                new Howl({ src: ['sounds/firework-single-3.mp3'] }),
-                new Howl({ src: ['sounds/firework-single-4.mp3'] }),
-                new Howl({ src: ['sounds/firework-single-5.mp3'] })
+                new Howl({
+                    src: ['sounds/firework-single-1.mp3']
+                }),
+                new Howl({
+                    src: ['sounds/firework-single-2.mp3']
+                }),
+                new Howl({
+                    src: ['sounds/firework-single-3.mp3']
+                }),
+                new Howl({
+                    src: ['sounds/firework-single-4.mp3']
+                }),
+                new Howl({
+                    src: ['sounds/firework-single-5.mp3']
+                })
             ],
             whistle: [
-                new Howl({ src: ['sounds/firework-whistle-1.wav'], volume: 0.05 }),
-                new Howl({ src: ['sounds/firework-whistle-2.wav'], volume: 0.05 }),
-                new Howl({ src: ['sounds/firework-whistle-3.wav'], volume: 0.05 }),
+                new Howl({
+                    src: ['sounds/firework-whistle-1.wav'],
+                    volume: 0.05
+                }),
+                new Howl({
+                    src: ['sounds/firework-whistle-2.wav'],
+                    volume: 0.05
+                }),
+                new Howl({
+                    src: ['sounds/firework-whistle-3.wav'],
+                    volume: 0.05
+                }),
             ]
         }
 
@@ -156,14 +177,14 @@ const ny = new Canv('canvas', {
             this.displayType = this.displayType ? 0 : 1;
             // this.bg.color = this.displayType ? new Color(0, 0, 0, 0.1) : new Color(255, 255, 255, 0.1);
             this.clicked = true;
-            if(this.newYears) {
+            if (this.newYears) {
                 this.addFirework(this.mouseX, this.mouseY);
             }
         });
     },
 
     addFirework(x, y, velX, velY) {
-        if(velX === undefined) {
+        if (velX === undefined) {
             velX = Canv.random(-5, 5);
             velY = Canv.random(-12, -8);
         }
@@ -182,7 +203,7 @@ const ny = new Canv('canvas', {
     },
 
     playCountdownSound(number) {
-        
+
     },
 
     dhm(ms) {
@@ -194,7 +215,7 @@ const ny = new Canv('canvas', {
         minutesms = ms % (60 * 1000);
         sec = Math.floor((minutesms) / (1000));
 
-        if(this.displayType === 1) {
+        if (this.displayType === 1) {
             if (days < 10 && days > 0) {
                 days = "0" + days;
             }
@@ -212,10 +233,10 @@ const ny = new Canv('canvas', {
         if (this.tenSeconds) {
             return sec;
         } else {
-            if(this.displayType === 0) {
+            if (this.displayType === 0) {
                 return `${days} days ${hours} hours ${minutes} minutes ${sec} seconds`;
             }
-            if(this.displayType === 1) {
+            if (this.displayType === 1) {
                 return days + ":" + hours + ":" + minutes + ":" + sec;
             }
 
@@ -223,42 +244,46 @@ const ny = new Canv('canvas', {
     },
 
     triggerNewYears() {
-        if(!this.triggered) {
+        if (!this.triggered) {
             this.triggered = true;
-            let j = 0;
-            for(let i = -10; i < 11; i++) {
-                setTimeout(() => {
-                    this.addFirework(this.halfWidth(), this.height, i, -10);
-                }, j * 100);
-                j++;
-            }
-            setTimeout(() => {
-                const count = 10;
+            if (this.autoFireworks) {
+                let j, i;
+
+                const count = 20;
                 const spacing = this.width / count;
                 j = 0;
                 i = 0;
-                for(let i = 0; i < count; i++) {
+                for (let i = 0; i < count; i++) {
                     setTimeout(() => {
-                        this.addFirework((spacing) * (i+1), this.height, 0, -12);
-                        if(i === count-1 && this.autoFireworks) {
-                            this.auto = true;
-                        }
-                    }, j * 500);
+                        this.addFirework((spacing) * (i + 1), this.height, 0, -12);
+                    }, j * 250);
                     j++;
                 }
 
+                setTimeout(() => {
+                    j = 0;
+                    for (let i = -16; i < 16; i++) {
+                        setTimeout(() => {
+                            this.addFirework(this.halfWidth(), this.height, i, -12);
 
-            }, 3000);
+                            if (i === 15 && this.autoFireworks) {
+                                this.auto = true;
+                            }
+                        }, j * 50);
+                        j++;
+                    }
+                }, 5000);
+            }
         }
 
-        if(this.auto) {
-            if(this.frames % this.fireworkDelay === 0) {
-                this.addFirework(this.halfWidth(), this.height);
-            } 
+        if (this.auto) {
+            // if (this.frames % this.fireworkDelay === 0) {
+            //     this.addFirework(this.randomWidth, this.height);
+            // }
         }
     },
 
-    setDebug(debugSeconds=10) {
+    setDebug(debugSeconds = 10) {
         this.debugSeconds = debugSeconds;
         this.triggerDebug = true;
         this.debug = true;
@@ -269,7 +294,7 @@ const ny = new Canv('canvas', {
             if (this.frames === 1 || this.triggerDebug) {
                 this.triggerDebug = false;
                 this.nyDate = new Date();
-                this.nyDate.setSeconds(this.nyDate.getSeconds() + (this.debugSeconds+1));
+                this.nyDate.setSeconds(this.nyDate.getSeconds() + (this.debugSeconds + 1));
             }
         } else {
             this.nyDate = new Date("01-01-2020");
@@ -316,10 +341,10 @@ const ny = new Canv('canvas', {
         this.countdown.color = color;
         this.countdown.string = this.dhm(this.getCountdown());
 
-        this.clickText = new Text("(click for fireworks)", this.halfWidth(), 10, 14);
+        this.clickText = new Text("(click for fireworks)", this.halfWidth(), this.countdown.y + this.countdown.fontSize, 14);
         this.clickText.textAlign = "center";
         this.clickText.color = color;
-        
+
         if (this.tenSeconds === true && !this.newYears) {
             this.updatePole();
         }
@@ -327,7 +352,6 @@ const ny = new Canv('canvas', {
         if (this.newYears) {
             this.triggerNewYears();
             this.countdown.string = "HAPPY NEW YEAR!!";
-            // this.countdown.moveX(Canv.random(-5, 5));
 
             if (this.getCountdown() < -200 && this.pole.stick.height > 1) {
                 this.pole.stick.height -= 10;
@@ -335,9 +359,9 @@ const ny = new Canv('canvas', {
             }
         }
 
-        for(let i = this.fireworks.length-1; i>=0; i--) {
+        for (let i = this.fireworks.length - 1; i >= 0; i--) {
             this.fireworks[i].update(this.gravity);
-            if(this.fireworks[i].done()) {
+            if (this.fireworks[i].done()) {
                 this.fireworks.splice(i, 1);
             }
         }
@@ -346,7 +370,7 @@ const ny = new Canv('canvas', {
     draw() {
         this.add(this.bg);
 
-        if(this.newYears) {
+        if (this.newYears) {
             this.fireworks.forEach(firework => {
                 firework.show();
             })
@@ -354,7 +378,7 @@ const ny = new Canv('canvas', {
 
         this.add(this.pole);
 
-        if(this.newYears) {
+        if (this.newYears && this.auto) {
             this.add(this.clickText);
         }
         this.add(this.countdown);
