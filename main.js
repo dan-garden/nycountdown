@@ -24,7 +24,7 @@ function Particle(x, y, color, firework, size=1) {
     this.update = function() {
         if(!this.firework) {
             this.vel.multi(0.85);
-            this.lifespan -= Canv.random(2, 5);
+            this.lifespan -= 5;
         }
 
         this.vel.add(this.acc);
@@ -53,8 +53,12 @@ function Particle(x, y, color, firework, size=1) {
 function Firework(canv, x, y) {
     this.color = Color.random();
     this.firework = new Particle(x, y, this.color, true, 2);
+
+    canv.playFireworkWhistle();
+
     this.exploded = false;
     this.particles = [];
+    this.rainbow = Canv.random(0, 1);
 
     this.done = function() {
         if(this.exploded && this.particles.length === 0) {
@@ -85,9 +89,12 @@ function Firework(canv, x, y) {
     }
 
     this.explode = function() {
-        canv.playFireworkSound();
+        canv.playFireworkPop();
         for(let i = 0; i < Canv.random(50, 150); i++) {
             let p = new Particle(this.firework.pos.x, this.firework.pos.y, this.color, false);
+            if(this.rainbow) {
+                p.color = Color.random();
+            }
             this.particles.push(p);
         }
     }
@@ -106,17 +113,23 @@ function Firework(canv, x, y) {
 const ny = new Canv('canvas', {
     fullscreen: true,
     debug: true,
-    debugSeconds: 5,
+    debugSeconds: 0,
     displayType: 1,
     fireworkDelay: 10,
     setup() {
         this.sounds = {
-            fireworks: [
+            crackling: new Howl({ src: ['sounds/firework-crackling.mp3'] }),
+            pop: [
                 new Howl({ src: ['sounds/firework-single-1.mp3'] }),
                 new Howl({ src: ['sounds/firework-single-2.mp3'] }),
                 new Howl({ src: ['sounds/firework-single-3.mp3'] }),
                 new Howl({ src: ['sounds/firework-single-4.mp3'] }),
                 new Howl({ src: ['sounds/firework-single-5.mp3'] })
+            ],
+            whistle: [
+                new Howl({ src: ['sounds/firework-whistle-1.wav'], volume: 0.05 }),
+                new Howl({ src: ['sounds/firework-whistle-2.wav'], volume: 0.05 }),
+                new Howl({ src: ['sounds/firework-whistle-3.wav'], volume: 0.05 }),
             ]
         }
 
@@ -139,6 +152,7 @@ const ny = new Canv('canvas', {
         this.bg.color = new Color(0, 0, 0, 0.1);
         this.bg.addEventListener("click", () => {
             this.displayType = this.displayType ? 0 : 1;
+            // this.bg.color = this.displayType ? new Color(0, 0, 0, 0.1) : new Color(255, 255, 255, 0.1);
             this.clicked = true;
             if(this.newYears) {
                 this.addFirework(this.mouseX, this.mouseY);
@@ -150,8 +164,14 @@ const ny = new Canv('canvas', {
         this.fireworks.push(new Firework(this, x, y));
     },
 
-    playFireworkSound() {
-        const effect = Canv.random(this.sounds.fireworks);
+    playFireworkPop() {
+        const effect = Canv.random(this.sounds.pop);
+        effect.play();
+        // this.sounds.crackling.play();
+    },
+
+    playFireworkWhistle() {
+        const effect = Canv.random(this.sounds.whistle);
         effect.play();
     },
 
@@ -253,7 +273,7 @@ const ny = new Canv('canvas', {
         this.countdown.color = color;
         this.countdown.string = this.dhm(this.getCountdown());
 
-        this.clickText = new Text("(click for fireworks)", this.halfWidth(), this.height-50);
+        this.clickText = new Text("(click for fireworks)", this.halfWidth(), this.height-50, 14);
         this.clickText.textAlign = "center";
         this.clickText.color = color;
         
