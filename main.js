@@ -113,7 +113,7 @@ function Firework(canv, x, y) {
 const ny = new Canv('canvas', {
     fullscreen: true,
     debug: true,
-    debugSeconds: 10,
+    debugSeconds: 15,
     displayType: 1,
     fireworkDelay: 10,
     setup() {
@@ -283,7 +283,7 @@ const ny = new Canv('canvas', {
 
         if (this.newYears) {
             this.triggerNewYears();
-            this.countdown.string = "HAPPY NEW YEARS";
+            this.countdown.string = "HAPPY NEW YEAR!!";
             // this.countdown.moveX(Canv.random(-5, 5));
 
             if (this.getCountdown() < -200 && this.pole.stick.height > 1) {
