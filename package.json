@@ -1,0 +1,30 @@
+{
+  "name": "nycountdown",
+  "version": "1.0.0",
+  "description": "Countdown for New Years!",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dan-garden/nycountdown.git"
+  },
+  "keywords": [
+    "new",
+    "newyear",
+    "new",
+    "year",
+    "ny",
+    "fireworks",
+    "countdown",
+    "time",
+    "date"
+  ],
+  "author": "Daniel Garden",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dan-garden/nycountdown/issues"
+  },
+  "homepage": "https://github.com/dan-garden/nycountdown#readme"
+}
