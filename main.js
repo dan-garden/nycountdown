@@ -183,6 +183,11 @@ const ny = new Canv('canvas', {
         });
     },
 
+    resize() {
+        this.bg.width = this.width;
+        this.bg.height = this.height;
+    },
+
     addFirework(x, y, velX, velY) {
         if (velX === undefined) {
             velX = Canv.random(-5, 5);
@@ -376,7 +381,9 @@ const ny = new Canv('canvas', {
             })
         }
 
-        this.add(this.pole);
+        if(!this.newYears) {
+            this.add(this.pole);
+        }
 
         if (this.newYears && this.auto) {
             this.add(this.clickText);
