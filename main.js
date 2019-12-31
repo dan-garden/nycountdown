@@ -112,7 +112,7 @@ function Firework(canv, x, y, velX, velY) {
 
 const ny = new Canv('canvas', {
     fullscreen: true,
-    debug: true,
+    debug: false,
     debugSeconds: 10,
     displayType: 1,
     fireworkDelay: 20,
