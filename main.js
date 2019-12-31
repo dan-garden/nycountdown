@@ -112,12 +112,18 @@ function Firework(canv, x, y, velX, velY) {
 
 const ny = new Canv('canvas', {
     fullscreen: true,
-    debug: false,
+    debug: true,
     debugSeconds: 10,
     displayType: 1,
     fireworkDelay: 20,
     autoFireworks: true,
     fontSize: 40,
+    tenSeconds: false,
+    newYears: false,
+    clicked: false,
+    triggered: false,
+    triggerDebug: false,
+    auto: false,
     setup() {
         this.sounds = {
             crackling: new Howl({
@@ -156,12 +162,6 @@ const ny = new Canv('canvas', {
             ]
         }
 
-        this.tenSeconds = false;
-        this.newYears = false;
-        this.clicked = false;
-        this.triggered = false;
-        this.triggerDebug = false;
-        this.auto = false;
         this.pole = new ShapeGroup({
             ball: new Circle(-100, -100),
             stick: new Rect(-100, -100),
