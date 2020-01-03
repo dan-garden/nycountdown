@@ -222,16 +222,16 @@ const ny = new Canv('canvas', {
 
         if (this.displayType === 1) {
             if (days < 10 && days > 0) {
-                days = "0" + days;
+                days = `0${days}`;
             }
             if (hours < 10 && hours > 0) {
-                hours = "0" + hours;
+                hours = `0${hours}`;
             }
             if (minutes < 10 && minutes > 0) {
-                minutes = "0" + minutes;
+                minutes = `0${minutes}`;
             }
             if (sec < 10 && sec > 0) {
-                sec = "0" + sec;
+                sec = `0${sec}`;
             }
         }
 
@@ -295,6 +295,7 @@ const ny = new Canv('canvas', {
     },
 
     getCountdown() {
+        let curDate = new Date;
         if (this.debug) {
             if (this.frames === 1 || this.triggerDebug) {
                 this.triggerDebug = false;
@@ -302,10 +303,9 @@ const ny = new Canv('canvas', {
                 this.nyDate.setSeconds(this.nyDate.getSeconds() + (this.debugSeconds + 1));
             }
         } else {
-            this.nyDate = new Date("01-01-2020");
+            this.nyDate = new Date("01-01-" + curDate.getFullYear());
         }
 
-        let curDate = new Date;
         let ms = this.nyDate.getTime() - curDate.getTime();
         if (ms <= 11000) {
             this.tenSeconds = true;
