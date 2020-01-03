@@ -303,7 +303,7 @@ const ny = new Canv('canvas', {
                 this.nyDate.setSeconds(this.nyDate.getSeconds() + (this.debugSeconds + 1));
             }
         } else {
-            this.nyDate = new Date("01-01-" + curDate.getFullYear());
+            this.nyDate = new Date("01-01-" + (curDate.getFullYear()+1));
         }
 
         let ms = this.nyDate.getTime() - curDate.getTime();
